@@ -44,13 +44,15 @@
             this.cadConvBox = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportOnExit = new System.Windows.Forms.CheckBox();
+            this.showNotifications = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -117,7 +119,8 @@
             // 
             this.outputBox.Location = new System.Drawing.Point(10, 101);
             this.outputBox.Name = "outputBox";
-            this.outputBox.Size = new System.Drawing.Size(562, 320);
+            this.outputBox.ReadOnly = true;
+            this.outputBox.Size = new System.Drawing.Size(562, 302);
             this.outputBox.TabIndex = 6;
             this.outputBox.TabStop = false;
             this.outputBox.Text = "";
@@ -126,10 +129,10 @@
             // 
             this.fileSystemWatcher1.EnableRaisingEvents = true;
             this.fileSystemWatcher1.Filter = "*.dwg";
-            this.fileSystemWatcher1.NotifyFilter = ((System.IO.NotifyFilters)(((((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName)
-                        | System.IO.NotifyFilters.Size)
-                        | System.IO.NotifyFilters.LastWrite)
-                        | System.IO.NotifyFilters.CreationTime)));
+            this.fileSystemWatcher1.NotifyFilter = ((System.IO.NotifyFilters)(((((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName) 
+            | System.IO.NotifyFilters.Size) 
+            | System.IO.NotifyFilters.LastWrite) 
+            | System.IO.NotifyFilters.CreationTime)));
             this.fileSystemWatcher1.SynchronizingObject = this;
             this.fileSystemWatcher1.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
             this.fileSystemWatcher1.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
@@ -185,6 +188,13 @@
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
@@ -228,18 +238,33 @@
             // 
             this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             // 
-            // aboutToolStripMenuItem
+            // exportOnExit
             // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.exportOnExit.AutoSize = true;
+            this.exportOnExit.Location = new System.Drawing.Point(458, 409);
+            this.exportOnExit.Name = "exportOnExit";
+            this.exportOnExit.Size = new System.Drawing.Size(114, 17);
+            this.exportOnExit.TabIndex = 11;
+            this.exportOnExit.Text = "Export Log On Exit";
+            this.exportOnExit.UseVisualStyleBackColor = true;
+            // 
+            // showNotifications
+            // 
+            this.showNotifications.AutoSize = true;
+            this.showNotifications.Location = new System.Drawing.Point(339, 409);
+            this.showNotifications.Name = "showNotifications";
+            this.showNotifications.Size = new System.Drawing.Size(114, 17);
+            this.showNotifications.TabIndex = 12;
+            this.showNotifications.Text = "Show Notifications";
+            this.showNotifications.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 433);
+            this.Controls.Add(this.showNotifications);
+            this.Controls.Add(this.exportOnExit);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.cadConvBox);
             this.Controls.Add(this.label3);
@@ -291,6 +316,8 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.CheckBox exportOnExit;
+        private System.Windows.Forms.CheckBox showNotifications;
     }
 }
 

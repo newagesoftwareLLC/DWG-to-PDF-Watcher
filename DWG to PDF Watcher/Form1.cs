@@ -55,9 +55,12 @@ namespace DWG2PDFWatcher
             outDirBox.Text = Properties.Settings.Default.outputBox;
             watchBox.Text = Properties.Settings.Default.watchBox;
             cadConvBox.Text = Properties.Settings.Default.cadconvBox;
+            exportOnExit.Checked = Properties.Settings.Default.exportOnExit;
+            showNotifications.Checked = Properties.Settings.Default.showNotifications;
             WindowState = FormWindowState.Minimized;
             BeginInvoke(new MethodInvoker(delegate { Hide(); }));
-            notifyIcon1.ShowBalloonTip(1000, "DWG to PDF Watcher", "program started", toolTip1.ToolTipIcon);
+            if (showNotifications.Checked)
+                notifyIcon1.ShowBalloonTip(1000, "DWG to PDF Watcher", "program started", toolTip1.ToolTipIcon);
         }
 
         private void fileSystemWatcher1_Changed(object sender, FileSystemEventArgs e)
@@ -69,7 +72,7 @@ namespace DWG2PDFWatcher
         {
             string value = (string)e.Argument;
             AppendOutputText(DateTime.Now + " | CREATING PDF FOR " + value);
-            if (FormWindowState.Minimized == this.WindowState)
+            if (FormWindowState.Minimized == this.WindowState && showNotifications.Checked)
                 notifyIcon1.ShowBalloonTip(1000, "DWG to PDF Watcher", DateTime.Now + " CREATING PDF FOR " + value, toolTip1.ToolTipIcon);
             string arguments = "";
             if (cadConvBox.Text.Contains("dp.exe"))
@@ -121,22 +124,26 @@ namespace DWG2PDFWatcher
             Properties.Settings.Default.outputBox = outDirBox.Text;
             Properties.Settings.Default.watchBox = watchBox.Text;
             Properties.Settings.Default.cadconvBox = cadConvBox.Text;
+            Properties.Settings.Default.exportOnExit = exportOnExit.Checked;
+            Properties.Settings.Default.showNotifications = showNotifications.Checked;
             Properties.Settings.Default.Save();
 
-
-            // Create a SaveFileDialog to request a path and file name to save to.
-            SaveFileDialog saveFile1 = new SaveFileDialog();
-
-            // Initialize the SaveFileDialog to specify the RTF extension for the file.
-            saveFile1.DefaultExt = "*.rtf";
-            saveFile1.Filter = "RTF Files|*.rtf";
-
-            // Determine if the user selected a file name from the saveFileDialog. 
-            if (saveFile1.ShowDialog() == System.Windows.Forms.DialogResult.OK &&
-               saveFile1.FileName.Length > 0)
+            if (exportOnExit.Checked)
             {
-                // Save the contents of the RichTextBox into the file.
-                outputBox.SaveFile(saveFile1.FileName, RichTextBoxStreamType.PlainText);
+                // Create a SaveFileDialog to request a path and file name to save to.
+                SaveFileDialog saveFile1 = new SaveFileDialog();
+
+                // Initialize the SaveFileDialog to specify the RTF extension for the file.
+                saveFile1.DefaultExt = "*.rtf";
+                saveFile1.Filter = "RTF Files|*.rtf";
+
+                // Determine if the user selected a file name from the saveFileDialog. 
+                if (saveFile1.ShowDialog() == System.Windows.Forms.DialogResult.OK &&
+                   saveFile1.FileName.Length > 0)
+                {
+                    // Save the contents of the RichTextBox into the file.
+                    outputBox.SaveFile(saveFile1.FileName, RichTextBoxStreamType.PlainText);
+                }
             }
         }
 
