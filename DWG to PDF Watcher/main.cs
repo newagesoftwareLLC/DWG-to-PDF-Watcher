@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Threading;
 using System.IO;
 
 namespace DWG2PDFWatcher
 {
-    public partial class Form1 : Form
+    public partial class main : Form
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
@@ -28,7 +25,7 @@ namespace DWG2PDFWatcher
             SendMessage(MyRichTextBox.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
         }
 
-        public Form1()
+        public main()
         {
             InitializeComponent();
         }
@@ -50,17 +47,12 @@ namespace DWG2PDFWatcher
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        string getBrowsePath()
         {
-            outDirBox.Text = Properties.Settings.Default.outputBox;
-            watchBox.Text = Properties.Settings.Default.watchBox;
-            cadConvBox.Text = Properties.Settings.Default.cadconvBox;
-            exportOnExit.Checked = Properties.Settings.Default.exportOnExit;
-            showNotifications.Checked = Properties.Settings.Default.showNotifications;
-            WindowState = FormWindowState.Minimized;
-            BeginInvoke(new MethodInvoker(delegate { Hide(); }));
-            if (showNotifications.Checked)
-                notifyIcon1.ShowBalloonTip(1000, "DWG to PDF Watcher", "program started", toolTip1.ToolTipIcon);
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog(this) == DialogResult.OK)
+                return fbd.SelectedPath;
+            return "";
         }
 
         private void fileSystemWatcher1_Changed(object sender, FileSystemEventArgs e)
@@ -81,6 +73,14 @@ namespace DWG2PDFWatcher
                 arguments = "/r /e /f 105 /d \"" + outDirBox.Text + "\\" + value + ".pdf\"" + " \"" + watchBox.Text + "\\" + value + ".dwg\"";
             Process.Start(cadConvBox.Text, arguments);
 
+            if (copyDirBox.Text.Count() > 0 && Directory.Exists(copyDirBox.Text))
+            {
+                File.Copy(watchBox.Text + "\\" + value + ".dwg", copyDirBox.Text + "\\" + value + ".dwg", true);
+                AppendOutputText(DateTime.Now + " | COPIED " + value + " TO " + copyDirBox.Text);
+            }
+            else if (copyDirBox.Text.Count() > 0 && Directory.Exists(copyDirBox.Text))
+                AppendOutputText("ERROR: " + copyDirBox.Text + " DIRECTORY DOESN'T EXIST!", Color.Red);
+
             FilesQueue.RemoveAt(0);
             return;
         }
@@ -90,74 +90,59 @@ namespace DWG2PDFWatcher
             fileSystemWatcher1.Path = watchBox.Text;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void dirWatchBrowse_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            if (fbd.ShowDialog(this) == DialogResult.OK)
-            {
-                watchBox.Text = fbd.SelectedPath;
-            }
+            watchBox.Text = getBrowsePath();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void copyDirBrowse_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd2 = new FolderBrowserDialog();
-            if (fbd2.ShowDialog(this) == DialogResult.OK)
-            {
-                outDirBox.Text = fbd2.SelectedPath;
-            }
+            copyDirBox.Text = getBrowsePath();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void OutputDirBrowse_Click(object sender, EventArgs e)
+        {
+            outDirBox.Text = getBrowsePath();
+        }
+
+        private void cadConvBrowse_Click(object sender, EventArgs e)
         {
             OpenFileDialog browseFile = new OpenFileDialog();
             browseFile.Filter = "EXE Files (*.exe)|*.exe";
             browseFile.Title = "Browse EXE file";
             if (browseFile.ShowDialog(this) == DialogResult.OK)
-            {
                 cadConvBox.Text = browseFile.FileName;
-            }
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.outputBox = outDirBox.Text;
             Properties.Settings.Default.watchBox = watchBox.Text;
             Properties.Settings.Default.cadconvBox = cadConvBox.Text;
             Properties.Settings.Default.exportOnExit = exportOnExit.Checked;
             Properties.Settings.Default.showNotifications = showNotifications.Checked;
+            Properties.Settings.Default.copydirBox = copyDirBox.Text;
             Properties.Settings.Default.Save();
 
             if (exportOnExit.Checked)
             {
-                // Create a SaveFileDialog to request a path and file name to save to.
                 SaveFileDialog saveFile1 = new SaveFileDialog();
-
-                // Initialize the SaveFileDialog to specify the RTF extension for the file.
                 saveFile1.DefaultExt = "*.rtf";
                 saveFile1.Filter = "RTF Files|*.rtf";
-
-                // Determine if the user selected a file name from the saveFileDialog. 
-                if (saveFile1.ShowDialog() == System.Windows.Forms.DialogResult.OK &&
-                   saveFile1.FileName.Length > 0)
-                {
-                    // Save the contents of the RichTextBox into the file.
+                if (saveFile1.ShowDialog() == DialogResult.OK && saveFile1.FileName.Length > 0)
                     outputBox.SaveFile(saveFile1.FileName, RichTextBoxStreamType.PlainText);
-                }
             }
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
+        private void main_Resize(object sender, EventArgs e)
         {
-            if (FormWindowState.Minimized == this.WindowState)
-            {
-                this.Hide();
-            }
+            if (FormWindowState.Minimized == WindowState)
+                Hide();
         }
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 aboutForm = new Form2();
+            help aboutForm = new help();
             aboutForm.Show();
         }
 
@@ -192,6 +177,43 @@ namespace DWG2PDFWatcher
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Created for AutoDWG and AcmeDWG");
+        }
+
+        private void cadConvHelpBtn_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Browse to your AutoDWG or AcmeDWG executable file.");
+        }
+
+        private void dirWatchHelpBtn_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Directory of DWG files to watch for changes.");
+        }
+
+        private void outputDirHelpBtn_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Directory to send PDF files to.");
+        }
+
+        private void copyDirHelpBtn_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Copy DWG changed files to here. Good for file backups.");
+        }
+
+        private void main_Shown(object sender, EventArgs e)
+        {
+            outDirBox.Text = Properties.Settings.Default.outputBox;
+            watchBox.Text = Properties.Settings.Default.watchBox;
+            cadConvBox.Text = Properties.Settings.Default.cadconvBox;
+            exportOnExit.Checked = Properties.Settings.Default.exportOnExit;
+            showNotifications.Checked = Properties.Settings.Default.showNotifications;
+            copyDirBox.Text = Properties.Settings.Default.copydirBox;
+            WindowState = FormWindowState.Minimized;
+            notifyIcon1.ShowBalloonTip(1000, "DWG to PDF Watcher", "program started", toolTip1.ToolTipIcon);
+        }
+
+        private void main_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
