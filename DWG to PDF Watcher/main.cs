@@ -73,13 +73,19 @@ namespace DWG2PDFWatcher
                 arguments = "/r /e /f 105 /d \"" + outDirBox.Text + "\\" + value + ".pdf\"" + " \"" + watchBox.Text + "\\" + value + ".dwg\"";
             Process.Start(cadConvBox.Text, arguments);
 
-            if (copyDirBox.Text.Count() > 0 && Directory.Exists(copyDirBox.Text))
+            try
             {
-                File.Copy(watchBox.Text + "\\" + value + ".dwg", copyDirBox.Text + "\\" + value + ".dwg", true);
-                AppendOutputText(DateTime.Now + " | COPIED " + value + " TO " + copyDirBox.Text);
+                if (copyDirBox.Text.Count() > 0 && Directory.Exists(copyDirBox.Text))
+                {
+                    File.Copy(watchBox.Text + "\\" + value + ".dwg", copyDirBox.Text + "\\" + value + ".dwg", true);
+                    AppendOutputText(DateTime.Now + " | COPIED " + value + " TO " + copyDirBox.Text);
+                }
+                else if (copyDirBox.Text.Count() > 0 && Directory.Exists(copyDirBox.Text))
+                    AppendOutputText("ERROR: " + copyDirBox.Text + " DIRECTORY DOESN'T EXIST!", Color.Red);
+            } catch
+            {
+                AppendOutputText("ERROR: Copy to path CRASHED!!", Color.Red);
             }
-            else if (copyDirBox.Text.Count() > 0 && Directory.Exists(copyDirBox.Text))
-                AppendOutputText("ERROR: " + copyDirBox.Text + " DIRECTORY DOESN'T EXIST!", Color.Red);
 
             FilesQueue.RemoveAt(0);
             return;
