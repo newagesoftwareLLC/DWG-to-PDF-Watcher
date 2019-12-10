@@ -93,22 +93,46 @@ namespace DWG2PDFWatcher
 
         private void watchBox_TextChanged(object sender, EventArgs e)
         {
-            fileSystemWatcher1.Path = watchBox.Text;
+            try
+            {
+                fileSystemWatcher1.Path = watchBox.Text;
+            } catch (Exception ex)
+            {
+                AppendOutputText("ERROR: " + ex);
+            }
         }
 
         private void dirWatchBrowse_Click(object sender, EventArgs e)
         {
-            watchBox.Text = getBrowsePath();
+            try {
+                watchBox.Text = getBrowsePath();
+            }
+            catch (Exception ex)
+            {
+                AppendOutputText("ERROR: " + ex);
+            }
         }
 
         private void copyDirBrowse_Click(object sender, EventArgs e)
         {
-            copyDirBox.Text = getBrowsePath();
+            try {
+                copyDirBox.Text = getBrowsePath();
+            }
+            catch (Exception ex)
+            {
+                AppendOutputText("ERROR: " + ex);
+            }
         }
 
         private void OutputDirBrowse_Click(object sender, EventArgs e)
         {
-            outDirBox.Text = getBrowsePath();
+            try {
+                outDirBox.Text = getBrowsePath();
+            }
+            catch (Exception ex)
+            {
+                AppendOutputText("ERROR: " + ex);
+            }   
         }
 
         private void cadConvBrowse_Click(object sender, EventArgs e)

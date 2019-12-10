@@ -76,6 +76,8 @@
             // 
             // watchBox
             // 
+            this.watchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.watchBox.Location = new System.Drawing.Point(96, 53);
             this.watchBox.Name = "watchBox";
             this.watchBox.Size = new System.Drawing.Size(377, 20);
@@ -94,6 +96,8 @@
             // 
             // outDirBox
             // 
+            this.outDirBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.outDirBox.Location = new System.Drawing.Point(96, 76);
             this.outDirBox.Name = "outDirBox";
             this.outDirBox.Size = new System.Drawing.Size(377, 20);
@@ -102,6 +106,7 @@
             // 
             // dirWatchBrowse
             // 
+            this.dirWatchBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dirWatchBrowse.Location = new System.Drawing.Point(476, 52);
             this.dirWatchBrowse.Name = "dirWatchBrowse";
             this.dirWatchBrowse.Size = new System.Drawing.Size(56, 23);
@@ -113,6 +118,7 @@
             // 
             // OutputDirBrowse
             // 
+            this.OutputDirBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.OutputDirBrowse.Location = new System.Drawing.Point(476, 75);
             this.OutputDirBrowse.Name = "OutputDirBrowse";
             this.OutputDirBrowse.Size = new System.Drawing.Size(56, 23);
@@ -124,6 +130,9 @@
             // 
             // outputBox
             // 
+            this.outputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.outputBox.Location = new System.Drawing.Point(8, 127);
             this.outputBox.Name = "outputBox";
             this.outputBox.ReadOnly = true;
@@ -160,6 +169,7 @@
             // 
             // cadConvBrowse
             // 
+            this.cadConvBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cadConvBrowse.Location = new System.Drawing.Point(476, 29);
             this.cadConvBrowse.Name = "cadConvBrowse";
             this.cadConvBrowse.Size = new System.Drawing.Size(56, 23);
@@ -171,6 +181,8 @@
             // 
             // cadConvBox
             // 
+            this.cadConvBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cadConvBox.Location = new System.Drawing.Point(96, 30);
             this.cadConvBox.Name = "cadConvBox";
             this.cadConvBox.Size = new System.Drawing.Size(377, 20);
@@ -247,6 +259,7 @@
             // 
             // exportOnExit
             // 
+            this.exportOnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.exportOnExit.AutoSize = true;
             this.exportOnExit.Location = new System.Drawing.Point(441, 451);
             this.exportOnExit.Name = "exportOnExit";
@@ -257,6 +270,7 @@
             // 
             // showNotifications
             // 
+            this.showNotifications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.showNotifications.AutoSize = true;
             this.showNotifications.Location = new System.Drawing.Point(322, 451);
             this.showNotifications.Name = "showNotifications";
@@ -267,6 +281,7 @@
             // 
             // copyDirBrowse
             // 
+            this.copyDirBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.copyDirBrowse.Location = new System.Drawing.Point(476, 98);
             this.copyDirBrowse.Name = "copyDirBrowse";
             this.copyDirBrowse.Size = new System.Drawing.Size(56, 23);
@@ -278,6 +293,8 @@
             // 
             // copyDirBox
             // 
+            this.copyDirBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.copyDirBox.Location = new System.Drawing.Point(96, 99);
             this.copyDirBox.Name = "copyDirBox";
             this.copyDirBox.Size = new System.Drawing.Size(377, 20);
@@ -295,6 +312,7 @@
             // 
             // cadConvHelpBtn
             // 
+            this.cadConvHelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cadConvHelpBtn.Location = new System.Drawing.Point(533, 29);
             this.cadConvHelpBtn.Name = "cadConvHelpBtn";
             this.cadConvHelpBtn.Size = new System.Drawing.Size(22, 23);
@@ -306,6 +324,7 @@
             // 
             // dirWatchHelpBtn
             // 
+            this.dirWatchHelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dirWatchHelpBtn.Location = new System.Drawing.Point(533, 52);
             this.dirWatchHelpBtn.Name = "dirWatchHelpBtn";
             this.dirWatchHelpBtn.Size = new System.Drawing.Size(22, 23);
@@ -317,6 +336,7 @@
             // 
             // outputDirHelpBtn
             // 
+            this.outputDirHelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.outputDirHelpBtn.Location = new System.Drawing.Point(533, 75);
             this.outputDirHelpBtn.Name = "outputDirHelpBtn";
             this.outputDirHelpBtn.Size = new System.Drawing.Size(22, 23);
@@ -328,6 +348,7 @@
             // 
             // copyDirHelpBtn
             // 
+            this.copyDirHelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.copyDirHelpBtn.Location = new System.Drawing.Point(533, 98);
             this.copyDirHelpBtn.Name = "copyDirHelpBtn";
             this.copyDirHelpBtn.Size = new System.Drawing.Size(22, 23);
@@ -365,6 +386,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(580, 514);
             this.Name = "main";
             this.Text = "DWG to PDF Watcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.main_FormClosing);
