@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DWG2PDFWatcher.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AutoCAD_Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Autodesk\AutoCAD LT 2022</Value>
+    </Setting>
+    <Setting Name="Watch_Directory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\CAD_Prints</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
