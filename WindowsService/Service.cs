@@ -17,6 +17,7 @@ namespace DWG2PDFWatcher
     public partial class Service : ServiceBase
     {
         ConcurrentBag<string> FilesQueue = new ConcurrentBag<string>();
+        string ScriptsPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\scripts";
 
         public Service()
         {
@@ -26,7 +27,7 @@ namespace DWG2PDFWatcher
         protected override void OnStart(string[] args)
         {
             fileSystemWatcher1.Path = Properties.Settings.Default.Watch_Directory;
-            Directory.CreateDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\scripts");
+            Directory.CreateDirectory(ScriptsPath);
             if (!backgroundWorker1.IsBusy) backgroundWorker1.RunWorkerAsync();
         }
 
@@ -76,9 +77,13 @@ namespace DWG2PDFWatcher
                     "_Y",
                     "_QUIT _Yes"
                 };
-                File.WriteAllLines("scripts/" + JustName + ".scr", lines);
+                File.WriteAllLines(ScriptsPath + "/" + JustName + ".scr", lines);
 
-                Process.Start('"' + Properties.Settings.Default.AutoCAD_Path + "\\accoreconsole\"", "/i \"" + s + "\" /s \"" + Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/scripts/" + JustName + ".scr\"");
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = Properties.Settings.Default.AutoCAD_Path + @"\accoreconsole";
+                startInfo.Arguments = "/i \"" + s + "\" /s \"" + ScriptsPath + @"\" + JustName + ".scr\"";
+                Process.Start(startInfo);
+
                 Thread.Sleep(5000); // wait for DWG/DXF to process
             }
         }
