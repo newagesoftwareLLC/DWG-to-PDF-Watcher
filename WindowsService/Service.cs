@@ -15,6 +15,7 @@ namespace DWG2PDFWatcher
     public partial class Service : ServiceBase
     {
         List<string> FilesQueue = new List<string>();
+        List<string> FilesToClear = new List<string>();
 
         public Service()
         {
@@ -46,7 +47,7 @@ namespace DWG2PDFWatcher
                 {
                     "_PLOT",
                     "_Y",
-                    "Layout1", // may need to change?
+                    "Layout1", // whatever layout you need
                     "DWG To PDF.pc3",
                     "ANSI full bleed A (8.50 x 11.00 Inches)",
                     "_Inches",
@@ -69,6 +70,7 @@ namespace DWG2PDFWatcher
                 File.WriteAllLines("scripts/" + s + ".scr", lines);
 
                 Process.Start(Properties.Settings.Default.AutoCAD_Path + @"\accoreconsole", "/i " + s + " /s " + Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/scripts/" + s + ".scr");
+                FilesToClear.Add(s);
                 Thread.Sleep(5000); // wait for DWG/DXF to process
             }
         }
@@ -80,19 +82,23 @@ namespace DWG2PDFWatcher
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            FilesQueue.Clear();
+            foreach (string f2c in FilesToClear)
+            {
+                FilesQueue.Remove(f2c);
+            }
+            FilesToClear.Clear();
             Thread.Sleep(500);
             if (!backgroundWorker1.IsBusy) backgroundWorker1.RunWorkerAsync();
         }
 
         private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e)
         {
-            
+            FilesQueue.Add(e.Name);
         }
 
         private void fileSystemWatcher1_Renamed(object sender, RenamedEventArgs e)
         {
-
+            FilesQueue.Add(e.Name);
         }
     }
 }
