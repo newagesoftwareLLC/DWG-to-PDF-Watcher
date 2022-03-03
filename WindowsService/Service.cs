@@ -47,7 +47,7 @@ namespace DWG2PDFWatcher
                 {
                     "_PLOT",
                     "_Y",
-                    "Layout1", // whatever layout you need
+                    Properties.Settings.Default.Print_Layout, // whatever layout you need printed
                     "DWG To PDF.pc3",
                     "ANSI full bleed A (8.50 x 11.00 Inches)",
                     "_Inches",
@@ -62,7 +62,7 @@ namespace DWG2PDFWatcher
                     "_N",
                     "_N",
                     "_Y",
-                    s,
+                    s, // PDF file name goes here
                     "_N",
                     "_Y",
                     "_QUIT _Yes"

@@ -8,5 +8,8 @@
     <Setting Name="Watch_Directory" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\CAD_Prints</Value>
     </Setting>
+    <Setting Name="Print_Layout" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Layout1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
