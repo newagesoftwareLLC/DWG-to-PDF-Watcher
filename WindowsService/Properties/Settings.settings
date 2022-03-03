@@ -11,5 +11,8 @@
     <Setting Name="Print_Layout" Type="System.String" Scope="User">
       <Value Profile="(Default)">Layout1</Value>
     </Setting>
+    <Setting Name="Output_Directory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\CAD_Prints\PDFs</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

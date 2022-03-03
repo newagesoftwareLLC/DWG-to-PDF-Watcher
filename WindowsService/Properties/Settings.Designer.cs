@@ -58,5 +58,17 @@ namespace DWG2PDFWatcher.Properties {
                 this["Print_Layout"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\CAD_Prints\\PDFs")]
+        public string Output_Directory {
+            get {
+                return ((string)(this["Output_Directory"]));
+            }
+            set {
+                this["Output_Directory"] = value;
+            }
+        }
     }
 }

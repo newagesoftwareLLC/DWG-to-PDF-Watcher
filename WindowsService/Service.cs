@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,8 +15,7 @@ namespace DWG2PDFWatcher
 {
     public partial class Service : ServiceBase
     {
-        List<string> FilesQueue = new List<string>();
-        List<string> FilesToClear = new List<string>();
+        ConcurrentBag<string> FilesQueue = new ConcurrentBag<string>();
 
         public Service()
         {
@@ -62,7 +62,7 @@ namespace DWG2PDFWatcher
                     "_N",
                     "_N",
                     "_Y",
-                    s, // PDF file name goes here
+                    Properties.Settings.Default.Output_Directory + @"\" + s, // PDF file name goes here
                     "_N",
                     "_Y",
                     "_QUIT _Yes"
@@ -70,7 +70,6 @@ namespace DWG2PDFWatcher
                 File.WriteAllLines("scripts/" + s + ".scr", lines);
 
                 Process.Start(Properties.Settings.Default.AutoCAD_Path + @"\accoreconsole", "/i " + s + " /s " + Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/scripts/" + s + ".scr");
-                FilesToClear.Add(s);
                 Thread.Sleep(5000); // wait for DWG/DXF to process
             }
         }
@@ -82,11 +81,11 @@ namespace DWG2PDFWatcher
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            foreach (string f2c in FilesToClear)
+            while (!FilesQueue.IsEmpty)
             {
-                FilesQueue.Remove(f2c);
+                string item = "";
+                FilesQueue.TryTake(out item);
             }
-            FilesToClear.Clear();
             Thread.Sleep(500);
             if (!backgroundWorker1.IsBusy) backgroundWorker1.RunWorkerAsync();
         }
