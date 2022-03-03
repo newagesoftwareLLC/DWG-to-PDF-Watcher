@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ namespace DWG2PDFWatcher
         protected override void OnStart(string[] args)
         {
             fileSystemWatcher1.Path = Properties.Settings.Default.Watch_Directory;
-            Directory.CreateDirectory("scripts");
+            Directory.CreateDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\scripts");
             if (!backgroundWorker1.IsBusy) backgroundWorker1.RunWorkerAsync();
         }
 
@@ -35,13 +36,21 @@ namespace DWG2PDFWatcher
 
         private void fileSystemWatcher1_Changed(object sender, FileSystemEventArgs e)
         {
-            FilesQueue.Add(e.Name);
+            ProcessFile(e);
+        }
+
+        private void ProcessFile(FileSystemEventArgs e)
+        {
+            string strFileExt = Path.GetExtension(e.FullPath);
+            if (strFileExt.ToLower().Equals(".dwg") || strFileExt.ToLower().Equals(".dxf"))
+                FilesQueue.Add(e.FullPath);
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             foreach (string s in FilesQueue)
             {
+                string JustName = Path.GetFileNameWithoutExtension(s);
                 // Create .scr script file
                 string[] lines =
                 {
@@ -62,14 +71,14 @@ namespace DWG2PDFWatcher
                     "_N",
                     "_N",
                     "_Y",
-                    Properties.Settings.Default.Output_Directory + @"\" + s, // PDF file name goes here
+                    Properties.Settings.Default.Output_Directory + @"\" + JustName, // PDF file name goes here
                     "_N",
                     "_Y",
                     "_QUIT _Yes"
                 };
-                File.WriteAllLines("scripts/" + s + ".scr", lines);
+                File.WriteAllLines("scripts/" + JustName + ".scr", lines);
 
-                Process.Start(Properties.Settings.Default.AutoCAD_Path + @"\accoreconsole", "/i " + s + " /s " + Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/scripts/" + s + ".scr");
+                Process.Start('"' + Properties.Settings.Default.AutoCAD_Path + "\\accoreconsole\"", "/i \"" + s + "\" /s \"" + Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/scripts/" + JustName + ".scr\"");
                 Thread.Sleep(5000); // wait for DWG/DXF to process
             }
         }
@@ -92,12 +101,12 @@ namespace DWG2PDFWatcher
 
         private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e)
         {
-            FilesQueue.Add(e.Name);
+            ProcessFile(e);
         }
 
         private void fileSystemWatcher1_Renamed(object sender, RenamedEventArgs e)
         {
-            FilesQueue.Add(e.Name);
+            ProcessFile(e);
         }
     }
 }
