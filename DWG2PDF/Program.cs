@@ -81,10 +81,10 @@ class Program
 
     private static void ProcessFile(FileSystemEventArgs e)
     {
-        Console.WriteLine("processing {0}", e.FullPath);
         string strFileExt = Path.GetExtension(e.FullPath);
         if (strFileExt.ToLower().Equals(".dwg") || strFileExt.ToLower().Equals(".dxf"))
         {
+            Console.WriteLine("processing {0}", e.FullPath);
             string JustName = Path.GetFileNameWithoutExtension(e.FullPath);
             // Create .scr script file
             string[] lines =
