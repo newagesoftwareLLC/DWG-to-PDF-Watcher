@@ -10,6 +10,20 @@ class Program
 
     static void Main(string[] args)
     {
+        if (!File.Exists("appSettings.json"))
+        {
+            MessageBox.Show("ERROR: appSettings.json file missing!"); // if windows app
+            Console.WriteLine("ERROR: appSettings.json file missing!"); // if console app
+            return;
+        }
+
+        if (!Directory.Exists(Config.GetSection("Watch_Directory").Value.Replace("/", "\\")))
+        {
+            MessageBox.Show("ERROR: Watch_Directory directory does not exist!"); // if windows app
+            Console.WriteLine("ERROR: Watch_Directory directory does not exist!"); // if console app
+            return;
+        }
+
         using var watcher = new FileSystemWatcher(Config.GetSection("Watch_Directory").Value.Replace("/", "\\"));
         Console.WriteLine("watching {0}", Config.GetSection("Watch_Directory").Value.Replace("/", "\\"));
         Directory.CreateDirectory(ScriptsPath);
@@ -114,6 +128,14 @@ class Program
             File.WriteAllLines(ScriptsPath + "/" + JustName + ".scr", lines);
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
+
+            if (!File.Exists(Config.GetSection("AutoCAD_Path").Value.Replace("/", "\\") + @"\accoreconsole"))
+            {
+                MessageBox.Show("ERROR: AutoCAD_Path is not correct! accoreconsole app should be present in directory."); // if windows app
+                Console.WriteLine("ERROR: AutoCAD_Path is not correct! accoreconsole app should be present in directory."); // if console app
+                return;
+            }
+
             startInfo.FileName = Config.GetSection("AutoCAD_Path").Value.Replace("/", "\\") + @"\accoreconsole";
             startInfo.Arguments = "/i \"" + e.FullPath + "\" /s \"" + ScriptsPath + @"\" + JustName + ".scr\"";
             Process.Start(startInfo);
