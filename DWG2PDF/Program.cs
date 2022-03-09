@@ -1,9 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 class Program
 {
+    [DllImport("user32.dll")]
+    static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
     private static ConcurrentBag<string> FilesQueue = new ConcurrentBag<string>();
     private static string ScriptsPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\scripts";
     private static IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
@@ -42,55 +46,18 @@ class Program
         //watcher.IncludeSubdirectories = false;
         watcher.EnableRaisingEvents = true;
 
+        // hide window
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            IntPtr h = Process.GetCurrentProcess().MainWindowHandle;
+            ShowWindow(h, 0);
+        }
+
+        // keep app running
         while (true)
         {
-
+            System.Threading.Thread.Sleep(1);
         }
-        /*while (true)
-        {
-            foreach (string s in FilesQueue)
-            {
-                string JustName = Path.GetFileNameWithoutExtension(s);
-                // Create .scr script file
-                string[] lines =
-                {
-                    "_PLOT",
-                    "_Y",
-                    Config.GetSection("Print_Layout").Value, // whatever layout you need printed
-                    "DWG To PDF.pc3",
-                    "ANSI full bleed A (8.50 x 11.00 Inches)",
-                    "_Inches",
-                    "_Landscape",
-                    "_No",
-                    "_Extents",
-                    "_Fit",
-                    "0,0",
-                    "_Yes",
-                    ".",
-                    "_Yes",
-                    "_N",
-                    "_N",
-                    "_Y",
-                    Config.GetSection("Output_Directory").Value + @"\" + JustName, // PDF file name goes here
-                    "_N",
-                    "_Y",
-                    "_QUIT _Yes"
-                };
-                File.WriteAllLines(ScriptsPath + "/" + JustName + ".scr", lines);
-
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = Config.GetSection("AutoCAD_Path").Value.Replace("/", "\\") + @"\accoreconsole";
-                startInfo.Arguments = "/i \"" + s + "\" /s \"" + ScriptsPath + @"\" + JustName + ".scr\"";
-                Process.Start(startInfo);
-
-                Thread.Sleep(5000); // wait for DWG/DXF to process
-            }
-            while (!FilesQueue.IsEmpty)
-            {
-                string item = "";
-                FilesQueue.TryTake(out item);
-            }
-        }*/
     }
 
     private static void ProcessFile(FileSystemEventArgs e)
