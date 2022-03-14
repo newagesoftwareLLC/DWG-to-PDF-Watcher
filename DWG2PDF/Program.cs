@@ -11,6 +11,8 @@ class Program
     private static ConcurrentBag<string> FilesQueue = new ConcurrentBag<string>();
     private static string ScriptsPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\scripts";
     private static IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+    private System.Windows.Forms.NotifyIcon notifyIcon1;
+    private System.ComponentModel.IContainer components;
 
     static void Main(string[] args)
     {
@@ -53,11 +55,23 @@ class Program
             ShowWindow(h, 0);
         }
 
+        Program p = new Program();
+        p.test();
+
         // keep app running
         while (true)
         {
             System.Threading.Thread.Sleep(1);
         }
+    }
+
+    public void test() // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.notifyicon?view=windowsdesktop-6.0 WORKS!
+    {
+        this.components = new System.ComponentModel.Container();
+        this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+        notifyIcon1.Icon = new Icon("appicon.ico"); // TODO: PUT IN RESOURCES
+        notifyIcon1.Text = "DWG2PDF Started";
+        notifyIcon1.Visible = true;
     }
 
     private static void ProcessFile(FileSystemEventArgs e)
