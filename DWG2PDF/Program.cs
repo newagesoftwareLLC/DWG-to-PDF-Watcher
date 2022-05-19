@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 class Program
@@ -55,8 +56,8 @@ class Program
             ShowWindow(h, 0);
         }
 
-        Program p = new Program();
-        p.test();
+        //Program p = new Program();
+        //p.test();
 
         // keep app running
         while (true)
@@ -69,7 +70,7 @@ class Program
     {
         this.components = new System.ComponentModel.Container();
         this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-        notifyIcon1.Icon = new Icon("appicon.ico"); // TODO: PUT IN RESOURCES
+        notifyIcon1.Icon = new Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("appicon"));//new Icon("appicon.ico"); // TODO: PUT IN RESOURCES
         notifyIcon1.Text = "DWG2PDF Started";
         notifyIcon1.Visible = true;
     }
