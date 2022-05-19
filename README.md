@@ -1,10 +1,11 @@
 ### About
 
-* Watches a folder for dwg/dxf files that were changed, renamed or created and runs the AutoCAD console app to create the pdf print file. Runs off of the VS.NET FileSystemWatcher class. Requires [.NET 6 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) be installed. Run this with AutoCAD on the same workstation.
+* Watches a folder for dwg/dxf files that were changed, renamed or created and runs the AutoCAD console app to create the pdf print file. Runs off of the VS.NET FileSystemWatcher class. Run this with AutoCAD on the same workstation.
 
 ### Requirements
 
 * AutoCAD (no license required)
+* [.NET 6 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 * Windows or MacOS
 
 ### How To Use
