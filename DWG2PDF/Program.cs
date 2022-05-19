@@ -12,21 +12,21 @@ class Program
     private static ConcurrentBag<string> FilesQueue = new ConcurrentBag<string>();
     private static string ScriptsPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\scripts";
     private static IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
-    private System.Windows.Forms.NotifyIcon notifyIcon1;
+    //private System.Windows.Forms.NotifyIcon notifyIcon1;
     private System.ComponentModel.IContainer components;
 
     static void Main(string[] args)
     {
         if (!File.Exists("appSettings.json"))
         {
-            MessageBox.Show("ERROR: appSettings.json file missing!"); // if windows app
+            //MessageBox.Show("ERROR: appSettings.json file missing!"); // if windows app
             Console.WriteLine("ERROR: appSettings.json file missing!"); // if console app
             return;
         }
 
         if (!Directory.Exists(Config.GetSection("Watch_Directory").Value.Replace("/", "\\")))
         {
-            MessageBox.Show("ERROR: Watch_Directory directory does not exist!"); // if windows app
+            //MessageBox.Show("ERROR: Watch_Directory directory does not exist!"); // if windows app
             Console.WriteLine("ERROR: Watch_Directory directory does not exist!"); // if console app
             return;
         }
@@ -49,11 +49,14 @@ class Program
         //watcher.IncludeSubdirectories = false;
         watcher.EnableRaisingEvents = true;
 
-        // hide window
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        // hide window (Windows only atm)
+        if (Config.GetSection("Hide_Window").Value.Equals("true"))
         {
-            IntPtr h = Process.GetCurrentProcess().MainWindowHandle;
-            ShowWindow(h, 0);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                IntPtr h = Process.GetCurrentProcess().MainWindowHandle;
+                ShowWindow(h, 0);
+            }
         }
 
         //Program p = new Program();
@@ -66,14 +69,15 @@ class Program
         }
     }
 
-    public void test() // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.notifyicon?view=windowsdesktop-6.0 WORKS!
+    /*public void test() // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.notifyicon?view=windowsdesktop-6.0 WORKS!
     {
         this.components = new System.ComponentModel.Container();
         this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-        notifyIcon1.Icon = new Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("appicon"));//new Icon("appicon.ico"); // TODO: PUT IN RESOURCES
+        string[] test = Assembly.GetAssembly(typeof(Icon)).GetManifestResourceNames();
+        notifyIcon1.Icon = new Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("DWG2PDF.Resources.appicon.ico"));//new Icon("appicon.ico"); // TODO: PUT IN RESOURCES
         notifyIcon1.Text = "DWG2PDF Started";
         notifyIcon1.Visible = true;
-    }
+    }*/
 
     private static void ProcessFile(FileSystemEventArgs e)
     {
@@ -113,7 +117,7 @@ class Program
 
             if (!File.Exists(Config.GetSection("AutoCAD_Path").Value.Replace("/", "\\") + @"\accoreconsole"))
             {
-                MessageBox.Show("ERROR: AutoCAD_Path is not correct! accoreconsole app should be present in directory."); // if windows app
+                //MessageBox.Show("ERROR: AutoCAD_Path is not correct! accoreconsole app should be present in directory."); // if windows app
                 Console.WriteLine("ERROR: AutoCAD_Path is not correct! accoreconsole app should be present in directory."); // if console app
                 return;
             }
