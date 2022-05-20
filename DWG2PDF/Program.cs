@@ -10,41 +10,51 @@ class Program
     static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
     private static ConcurrentBag<string> FilesQueue = new ConcurrentBag<string>();
-    private static string ScriptsPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\scripts";
-    private static IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+    private static string ScriptsPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + Path.DirectorySeparatorChar + @"scripts";
+    private static IConfiguration Config = null;
     //private System.Windows.Forms.NotifyIcon notifyIcon1;
     private System.ComponentModel.IContainer components;
 
     static void Main(string[] args)
     {
-        if (!File.Exists("appSettings.json"))
+        string AppSettingsFile = "appSettings.json";
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            AppSettingsFile = "appSettings_Windows.json";
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            AppSettingsFile = "appSettings_MacOS.json";
+
+        if (!File.Exists(AppSettingsFile))
         {
             //MessageBox.Show("ERROR: appSettings.json file missing!"); // if windows app
-            Console.WriteLine("ERROR: appSettings.json file missing!"); // if console app
+            Console.WriteLine("ERROR: " + AppSettingsFile + " file missing!"); // if console app
             return;
         }
 
-        if (!Directory.Exists(Config.GetSection("Watch_Directory").Value.Replace("/", "\\")))
+        Config = new ConfigurationBuilder().AddJsonFile(AppSettingsFile).Build();
+
+        if (!Directory.Exists(Config.GetSection("Watch_Directory").Value))
         {
             //MessageBox.Show("ERROR: Watch_Directory directory does not exist!"); // if windows app
-            Console.WriteLine("ERROR: Watch_Directory directory does not exist!"); // if console app
+            Console.WriteLine("ERROR: Watch_Directory " + Config.GetSection("Watch_Directory").Value + " does not exist!"); // if console app
             return;
         }
 
-        using var watcher = new FileSystemWatcher(Config.GetSection("Watch_Directory").Value.Replace("/", "\\"));
-        Console.WriteLine("watching {0}", Config.GetSection("Watch_Directory").Value.Replace("/", "\\"));
-        Directory.CreateDirectory(ScriptsPath);
+        using var watcher = new FileSystemWatcher(Config.GetSection("Watch_Directory").Value);
+        Console.WriteLine("watching {0}", Config.GetSection("Watch_Directory").Value);
+        //Console.WriteLine("Checking if scripts directory exists: " + ScriptsPath);
+        if (!Directory.Exists(ScriptsPath))
+        {
+            Console.WriteLine("Creating directory at " + ScriptsPath);
+            Directory.CreateDirectory(ScriptsPath);
+        }
 
-        watcher.NotifyFilter = NotifyFilters.Attributes
-                             | NotifyFilters.CreationTime
-                             | NotifyFilters.DirectoryName
-                             | NotifyFilters.FileName
-                             | NotifyFilters.LastAccess
-                             | NotifyFilters.LastWrite;
+        watcher.NotifyFilter = NotifyFilters.LastWrite;
 
         watcher.Changed += OnChanged;
-        //watcher.Created += OnCreated;
+        watcher.Created += OnCreated;
         //watcher.Renamed += OnRenamed;
+
+        watcher.Filter = "*.dwg";
 
         //watcher.IncludeSubdirectories = false;
         watcher.EnableRaisingEvents = true;
@@ -106,24 +116,37 @@ class Program
                     "_N",
                     "_N",
                     "_Y",
-                    Config.GetSection("Output_Directory").Value + @"\" + JustName, // PDF file name goes here
+                    Config.GetSection("Output_Directory").Value + Path.DirectorySeparatorChar + JustName, // PDF file name goes here
                     "_N",
                     "_Y",
                     "_QUIT _Yes"
                 };
-            File.WriteAllLines(ScriptsPath + "/" + JustName + ".scr", lines);
+            File.WriteAllLines(ScriptsPath + Path.DirectorySeparatorChar + JustName + ".scr", lines);
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
 
-            if (!File.Exists(Config.GetSection("AutoCAD_Path").Value.Replace("/", "\\") + @"\accoreconsole"))
+            string AutoCadPath = "";
+            string AcCoreConsoleName = "";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                AutoCadPath = Config.GetSection("AutoCAD_Path").Value + Path.DirectorySeparatorChar;
+                AcCoreConsoleName = "accoreconsole";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                AutoCadPath = Config.GetSection("AutoCAD_Path").Value + "/Contents/Helpers/AcCoreConsole.app/Contents/MacOS" + Path.DirectorySeparatorChar;
+                AcCoreConsoleName = "AcCoreConsole";
+            }
+
+            if (!File.Exists(AutoCadPath + AcCoreConsoleName))
             {
                 //MessageBox.Show("ERROR: AutoCAD_Path is not correct! accoreconsole app should be present in directory."); // if windows app
-                Console.WriteLine("ERROR: AutoCAD_Path is not correct! accoreconsole app should be present in directory."); // if console app
+                Console.WriteLine("ERROR: AutoCAD_Path " + AutoCadPath + AcCoreConsoleName + " file not found!"); // if console app
                 return;
             }
 
-            startInfo.FileName = Config.GetSection("AutoCAD_Path").Value.Replace("/", "\\") + @"\accoreconsole";
-            startInfo.Arguments = "/i \"" + e.FullPath + "\" /s \"" + ScriptsPath + @"\" + JustName + ".scr\"";
+            startInfo.FileName = AutoCadPath + AcCoreConsoleName;
+            startInfo.Arguments = "/i \"" + e.FullPath + "\" /s \"" + ScriptsPath + Path.DirectorySeparatorChar + JustName + ".scr\"";
             Process.Start(startInfo);
             //FilesQueue.Add(e.FullPath);
         }
@@ -132,15 +155,17 @@ class Program
 
     private static void OnChanged(object sender, FileSystemEventArgs e)
     {
+        Console.WriteLine("OnChanged() triggered.");
         ProcessFile(e);
     }
 
-    /*private static void OnCreated(object sender, FileSystemEventArgs e)
+    private static void OnCreated(object sender, FileSystemEventArgs e)
     {
+        Console.WriteLine("OnCreated() triggered.");
         ProcessFile(e);
     }
 
-    private static void OnRenamed(object sender, RenamedEventArgs e)
+    /*private static void OnRenamed(object sender, RenamedEventArgs e)
     {
         ProcessFile(e);
     }*/
